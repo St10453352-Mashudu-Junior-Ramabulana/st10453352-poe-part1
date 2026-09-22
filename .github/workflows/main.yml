@@ -1,0 +1,32 @@
+name: Validate Documentation
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  check-docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check if /docs folder exists
+      run: |
+        if [ ! -d "docs" ]; then
+          echo "Error: /docs folder is missing!"
+          exit 1
+        fi
+        echo "Docs folder found."
+        
+    - name: Check for Required Files
+      run: |
+        files=("ERD.png" "EndpointPlan.md" "RaceDayDB.sql")
+        for file in "${files[@]}"; do
+          if [ ! -f "docs/$file" ]; then
+            echo "Error: Missing file docs/$file"
+            exit 1
+          fi
+        done
+        echo "All required planning documents are present."
